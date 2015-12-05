@@ -115,7 +115,7 @@ mytextclock = awful.widget.textclock("%a, %b %d, %H:%M ", 60)
 -- battery
 battery = wibox.widget.textbox()
 vicious.register(battery, vicious.widgets.bat, function(widgets, args)
-  value = ""
+  local value = ""
 
   if args[2] <= 15 then
     value = markup(red, args[2])
@@ -139,7 +139,7 @@ end, 60, "BAT1")
 -- temp
 coretemp = wibox.widget.textbox()
 vicious.register(coretemp, vicious.widgets.thermal, function(widget, args)
-  value = ""
+  local value = ""
 
   if args[1] >= 80 then
     value =  markup(red, args[1])
