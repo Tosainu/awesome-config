@@ -150,15 +150,15 @@ vicious.register(coretemp, vicious.widgets.thermal, function(widget, args)
   end
 
   return markup(gray, 'CPU ') .. value .. '°C'
-end, 5, 'thermal_zone0')
+end, 7, 'thermal_zone0')
 
 -- memory
 memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, markup(gray, 'Mem') .. ' $1%', 15)
+vicious.register(memwidget, vicious.widgets.mem, markup(gray, 'Mem') .. ' $1%', 37)
 
 -- wifi
 wifi = wibox.widget.textbox()
-vicious.register(wifi, vicious.widgets.wifi, markup(gray, 'Wifi ') .. '${ssid} ${linp}%', 15, 'wlp2s0')
+vicious.register(wifi, vicious.widgets.wifi, markup(gray, 'Wifi ') .. '${ssid} ${linp}%', 17, 'wlp2s0')
 
 -- volume
 volume = wibox.widget.textbox()
