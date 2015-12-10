@@ -165,12 +165,12 @@ volume = wibox.widget.textbox()
 vicious.register(volume, vicious.widgets.volume, function(widget, args)
   return markup(gray, 'Vol ') .. args[1] .. '%' .. (function(status)
     if status == '♩' then
-      return ' M'
+      return ' [Muted]'
     else
       return ''
     end
   end)(args[2])
-end, 5, 'Master')
+end, 123, 'Master')
 -- }}}
 
 -- {{{ Wibox
