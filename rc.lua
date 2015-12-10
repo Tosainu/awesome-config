@@ -336,7 +336,19 @@ globalkeys = awful.util.table.join(
   awful.key({modkey}, "]",     function() awful.util.spawn("nautilus") end),
   awful.key({modkey}, "\\",    function() awful.util.spawn("chromium") end),
   awful.key({modkey}, "/",     function() awful.util.spawn("gimp") end),
-  awful.key({},       "Print", function() awful.util.spawn("scrot -e 'mv $f ~/Pictures/ 2>/dev/null'") end)
+  awful.key({},       "Print", function() awful.util.spawn("scrot -e 'mv $f ~/Pictures/ 2>/dev/null'") end),
+  awful.key({},       "XF86AudioLowerVolume", function()
+    awful.util.spawn("amixer sset Master 1%-")
+    vicious.force({volume})
+  end),
+  awful.key({},       "XF86AudioRaiseVolume", function()
+    awful.util.spawn("amixer sset Master 1%+")
+    vicious.force({volume})
+  end),
+  awful.key({},       "XF86AudioMute", function()
+    awful.util.spawn("amixer sset Master toggle")
+    vicious.force({volume})
+  end)
 )
 
 clientkeys = awful.util.table.join(
