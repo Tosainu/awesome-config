@@ -1,17 +1,13 @@
 -- {{{ Required Libraries
--- Standard awesome library
 local gears           = require('gears')
 local awful           = require('awful')
-awful.rules = require('awful.rules')
-require('awful.autofocus')
--- Widget and layout library
-local vicious         = require('vicious')
+      awful.rules     = require('awful.rules')
+                        require('awful.autofocus')
 local wibox           = require('wibox')
--- Theme handling library
 local beautiful       = require('beautiful')
--- Notification library
-local menubar         = require('menubar')
 local naughty         = require('naughty')
+local menubar         = require('menubar')
+local vicious         = require('vicious')
 --- }}}
 
 -- {{{ Error handling
@@ -106,7 +102,7 @@ local red    = '#ff3000'
 local yellow = '#ffe100'
 local gray   = '#777777'
 local function markup(color, text)
-  return '<span color="' .. color .. '">' .. text .. '</span>'
+  return '<span foreground="' .. tostring(color) .. '">' .. tostring(text) .. '</span>'
 end
 
 -- Separator
@@ -327,11 +323,7 @@ local globalkeys = awful.util.table.join(
   -- Menubar
   awful.key({ modkey }, 'p', function() menubar.show() end),
 
-  -- Mysettings
-  awful.key({ modkey }, ']',     function() awful.util.spawn('nautilus') end),
-  awful.key({ modkey }, '\\',    function() awful.util.spawn('chromium') end),
-  awful.key({ modkey }, '/',     function() awful.util.spawn('gimp') end),
-  awful.key({}, 'Print', function() awful.util.spawn('scrot -e "mv $f ~/Pictures/ 2>/dev/null"') end),
+  -- ALSA volume control
   awful.key({}, 'XF86AudioLowerVolume', function()
     awful.util.spawn('amixer sset Master 1%-')
     vicious.force({ volume })
@@ -340,10 +332,16 @@ local globalkeys = awful.util.table.join(
     awful.util.spawn('amixer sset Master 1%+')
     vicious.force({ volume })
   end),
-  awful.key({}, 'XF86AudioMute', function()
+  awful.key({}, 'XF86AudioMute',        function()
     awful.util.spawn('amixer sset Master toggle')
-    vicious.force({volume})
-  end)
+    vicious.force({ volume })
+  end),
+
+  -- User programs
+  awful.key({ modkey }, ']',     function() awful.util.spawn('nautilus') end),
+  awful.key({ modkey }, '\\',    function() awful.util.spawn('chromium') end),
+  awful.key({ modkey }, '/',     function() awful.util.spawn('gimp') end),
+  awful.key({},         'Print', function() awful.util.spawn('scrot -e "mv $f ~/Pictures/ 2>/dev/null"') end)
 )
 
 local clientkeys = awful.util.table.join(
