@@ -323,20 +323,6 @@ local globalkeys = awful.util.table.join(
   -- Menubar
   awful.key({ modkey }, 'p', function() menubar.show() end),
 
-  -- ALSA volume control
-  awful.key({}, 'XF86AudioLowerVolume', function()
-    awful.util.spawn('amixer sset Master 1%-')
-    vicious.force({ volume })
-  end),
-  awful.key({}, 'XF86AudioRaiseVolume', function()
-    awful.util.spawn('amixer sset Master 1%+')
-    vicious.force({ volume })
-  end),
-  awful.key({}, 'XF86AudioMute',        function()
-    awful.util.spawn('amixer sset Master toggle')
-    vicious.force({ volume })
-  end),
-
   -- User programs
   awful.key({ modkey }, ']',     function() awful.util.spawn('nautilus') end),
   awful.key({ modkey }, '\\',    function() awful.util.spawn('chromium') end),
