@@ -57,8 +57,10 @@ awful.layout.layouts = {
   awful.layout.suit.tile,
 }
 
+local editor        = os.getenv("EDITOR") or "vim"
 local file_manager  = "nautilus"
 local image_editor  = "gimp"
+local manual        = "man awesome"
 local screen_shot   = "scrot -e 'mv $f ~/Pictures/ 2>/dev/null'"
 local terminal      = "termite"
 local web_browser   = "chromium"
@@ -82,6 +84,10 @@ local function markup(color, text)
   return "<span foreground=\"" .. tostring(color) .. "\">" .. tostring(text) .. "</span>"
 end
 
+local function run_in_terminal(command)
+  return terminal .. " -e '" .. tostring(command) .. "'"
+end
+
 local function set_wallpaper(s)
   -- Wallpaper
   if beautiful.wallpaper then
@@ -100,8 +106,10 @@ end
 local mymainmenu = awful.menu({
   items = {
     { "awesome", {
-      { "hotkeys", function() return false, hotkeys_popup.show_help end },
-      { "restart", awesome.restart },
+      { "hotkeys",      function() return false, hotkeys_popup.show_help end },
+      { "manual",       run_in_terminal(manual) },
+      { "edit config",  run_in_terminal(editor .. " " .. awesome.conffile) },
+      { "restart",      awesome.restart },
     }, beautiful.awesome_icon },
     { "logout",   awesome.quit },
     { "suspend",  "systemctl suspend" },
@@ -381,6 +389,8 @@ local globalkeys = awful.util.table.join(
             { description = "show the menubar", group = "launcher" }),
 
   -- User programs
+  awful.key({ modkey }, "[",      function() awful.util.spawn(run_in_terminal(editor)) end,
+            { description = "open a text editor", group = "launcher" }),
   awful.key({ modkey }, "]",      function() awful.util.spawn(file_manager) end,
             { description = "open a file manager", group = "launcher" }),
   awful.key({ modkey }, "\\",     function() awful.util.spawn(web_browser) end,
