@@ -75,6 +75,22 @@ local function client_menu_toggle_fn()
     end
   end
 end
+
+local function markup(color, text)
+  return '<span foreground="' .. tostring(color) .. '">' .. tostring(text) .. '</span>'
+end
+
+local function set_wallpaper(s)
+  -- Wallpaper
+  if beautiful.wallpaper then
+    local wallpaper = beautiful.wallpaper
+    -- If wallpaper is a function, call it with the screen
+    if type(wallpaper) == "function" then
+      wallpaper = wallpaper(s)
+    end
+    gears.wallpaper.centered(wallpaper, s)
+  end
+end
 -- }}}
 
 -- {{{ Menu
@@ -101,9 +117,6 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 local red    = '#ff3000'
 local yellow = '#ffe100'
 local gray   = '#777777'
-local function markup(color, text)
-  return '<span foreground="' .. tostring(color) .. '">' .. tostring(text) .. '</span>'
-end
 
 -- Separator
 local separator = wibox.widget.textbox()
@@ -205,18 +218,6 @@ local tasklist_buttons = awful.util.table.join(
   awful.button({},         4, function() awful.client.focus.byidx( 1) end),
   awful.button({},         5, function() awful.client.focus.byidx(-1) end)
 )
-
-local function set_wallpaper(s)
-  -- Wallpaper
-  if beautiful.wallpaper then
-    local wallpaper = beautiful.wallpaper
-    -- If wallpaper is a function, call it with the screen
-    if type(wallpaper) == "function" then
-      wallpaper = wallpaper(s)
-    end
-    gears.wallpaper.centered(wallpaper, s)
-  end
-end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
