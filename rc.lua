@@ -378,10 +378,14 @@ local globalkeys = awful.util.table.join(
             { description = "show the menubar", group = "launcher" }),
 
   -- User programs
-  awful.key({ modkey }, "]",      function() awful.util.spawn("nautilus") end),
-  awful.key({ modkey }, "\\",     function() awful.util.spawn("chromium") end),
-  awful.key({ modkey }, "/",      function() awful.util.spawn("gimp") end),
-  awful.key({},         "Print",  function() awful.util.spawn("scrot -e \"mv $f ~/Pictures/ 2>/dev/null\"") end)
+  awful.key({ modkey }, "]",      function() awful.util.spawn("nautilus") end,
+            { description = "open a file manager", group = "launcher" }),
+  awful.key({ modkey }, "\\",     function() awful.util.spawn("chromium") end,
+            { description = "open a web browser", group = "launcher" }),
+  awful.key({ modkey }, "/",      function() awful.util.spawn("gimp") end,
+            { description = "open an image editor", group = "launcher" }),
+  awful.key({},         "Print",  function() awful.util.spawn("scrot -e \"mv $f ~/Pictures/ 2>/dev/null\"") end,
+            { description = "capture a screen shot", group = "launcher" })
 )
 
 local clientkeys = awful.util.table.join(
