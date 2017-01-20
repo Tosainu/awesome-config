@@ -1,6 +1,5 @@
 -- {{{ Required Libraries
 local awful         = require('awful')
-      awful.rules   = require('awful.rules')
                       require('awful.autofocus')
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 local beautiful     = require('beautiful')
@@ -257,7 +256,6 @@ awful.screen.connect_for_each_screen(function(s)
     -- Left widgets
     {
       layout = wibox.layout.fixed.horizontal,
-      mylauncher,
       s.mytaglist,
       s.mypromptbox,
     },
