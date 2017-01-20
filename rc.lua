@@ -465,23 +465,46 @@ root.keys(globalkeys)
 -- }}}
 
 -- {{{ Rules
-awful.rules.rules = {{
+awful.rules.rules = {
   -- All clients will match this rule.
-  rule = {}, properties = {
-    border_color = beautiful.border_normal,
-    border_width = beautiful.border_width,
-    buttons      = clientbuttons,
-    focus        = awful.client.focus.filter,
-    keys         = clientkeys,
-  }}, {
+  {
+    rule = {},
+    properties = {
+      border_color = beautiful.border_normal,
+      border_width = beautiful.border_width,
+      buttons      = clientbuttons,
+      focus        = awful.client.focus.filter,
+      keys         = clientkeys,
+    }
+  },
+
+  -- Floating clients.
+  {
+    rule_any = {
+      class = {
+        "Gnome-mplayer",
+        "MPlayer",
+        "Virt-manager",
+      },
+      name = {
+        "Event Tester",  -- xev.
+      },
+    },
+    properties = { floating = true }
+  },
+
+  -- Add titlebars to normal clients and dialogs
+  {
+    rule_any = {
+      type = { "normal", "dialog" }
+    },
+    properties = { titlebars_enabled = false }
+  },
+
+  -- Set Gimp to always map on the tag named "7" on screen 1.
+  {
     rule       = { class = 'Gimp' },
-    properties = { tag = tags[1][7] }
-  }, {
-    rule       = { class = 'MPlayer' },
-    properties = { floating = true }
-  }, {
-    rule       = { class = 'Virt-manager' },
-    properties = { floating = true }
+    properties = { screen = 1, tag = "7" }
   },
 }
 -- }}}
