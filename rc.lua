@@ -1,13 +1,13 @@
 -- {{{ Required Libraries
-local awful         = require('awful')
-                      require('awful.autofocus')
+local awful         = require("awful")
+                      require("awful.autofocus")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
-local beautiful     = require('beautiful')
-local gears         = require('gears')
-local menubar       = require('menubar')
-local naughty       = require('naughty')
-local vicious       = require('vicious')
-local wibox         = require('wibox')
+local beautiful     = require("beautiful")
+local gears         = require("gears")
+local menubar       = require("menubar")
+local naughty       = require("naughty")
+local vicious       = require("vicious")
+local wibox         = require("wibox")
 --- }}}
 
 -- {{{ Error handling
@@ -16,7 +16,7 @@ local wibox         = require('wibox')
 if awesome.startup_errors then
   naughty.notify({
     preset  = naughty.config.presets.critical,
-    title   = 'Oops, there were errors during startup!',
+    title   = "Oops, there were errors during startup!",
     text    = awesome.startup_errors
   })
 end
@@ -24,14 +24,14 @@ end
 -- Handle runtime errors after startup
 do
   local in_error = false
-  awesome.connect_signal('debug::error', function(err)
+  awesome.connect_signal("debug::error", function(err)
     -- Make sure we don't go into an endless error loop
     if in_error then return end
     in_error = true
 
     naughty.notify({
       preset  = naughty.config.presets.critical,
-      title   = 'Oops, an error happened!',
+      title   = "Oops, an error happened!",
       text    = tostring(err)
     })
 
@@ -42,17 +42,17 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init(awful.util.getdir('config') .. '/theme.lua')
+beautiful.init(awful.util.getdir("config") .. "/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-local terminal = 'termite'
+local terminal = "termite"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
-local modkey = 'Mod4'
+local modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -76,7 +76,7 @@ local function client_menu_toggle_fn()
 end
 
 local function markup(color, text)
-  return '<span foreground="' .. tostring(color) .. '">' .. tostring(text) .. '</span>'
+  return "<span foreground=\"" .. tostring(color) .. "\">" .. tostring(text) .. "</span>"
 end
 
 local function set_wallpaper(s)
@@ -96,14 +96,14 @@ end
 -- Create a laucher widget and a main menu
 local mymainmenu = awful.menu({
   items = {
-    { 'awesome', {
+    { "awesome", {
       { "hotkeys", function() return false, hotkeys_popup.show_help end },
-      { 'restart', awesome.restart },
+      { "restart", awesome.restart },
     }, beautiful.awesome_icon },
-    { 'logout',   awesome.quit },
-    { 'suspend',  'systemctl suspend' },
-    { 'reboot',   'systemctl reboot' },
-    { 'halt',     'systemctl poweroff' }
+    { "logout",   awesome.quit },
+    { "suspend",  "systemctl suspend" },
+    { "reboot",   "systemctl reboot" },
+    { "halt",     "systemctl poweroff" }
   }
 })
 
@@ -113,21 +113,21 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- Widgets {{{
 -- color
-local red    = '#ff3000'
-local yellow = '#ffe100'
-local gray   = '#777777'
+local red    = "#ff3000"
+local yellow = "#ffe100"
+local gray   = "#777777"
 
 -- Separator
 local separator = wibox.widget.textbox()
-separator:set_markup(markup(gray, ' | '))
+separator:set_markup(markup(gray, " | "))
 
 -- clock
-local mytextclock = awful.widget.textclock('%a, %b %d, %H:%M ', 60)
+local mytextclock = awful.widget.textclock("%a, %b %d, %H:%M ", 60)
 
 -- battery
 local battery = wibox.widget.textbox()
 vicious.register(battery, vicious.widgets.bat, function(widgets, args)
-  local value = tostring(args[2]) .. '%'
+  local value = tostring(args[2]) .. "%"
 
   if args[2] <= 15 then
     value = markup(red, value)
@@ -135,17 +135,17 @@ vicious.register(battery, vicious.widgets.bat, function(widgets, args)
     value = markup(yellow, value)
   end
 
-  if args[1] == '⌁' or args[1] == '↯' or args[1] == '+' then
-    value = value .. ' AC'
+  if args[1] == "⌁" or args[1] == "↯" or args[1] == "+" then
+    value = value .. " AC"
   end
 
-  return markup(gray, 'Bat ') .. value
-end, 60, 'BAT1')
+  return markup(gray, "Bat ") .. value
+end, 60, "BAT1")
 
 -- temp
 local coretemp = wibox.widget.textbox()
 vicious.register(coretemp, vicious.widgets.thermal, function(widget, args)
-  local value = tostring(args[1]) .. '°C'
+  local value = tostring(args[1]) .. "°C"
 
   if args[1] >= 80 then
     value =  markup(red, value)
@@ -153,28 +153,28 @@ vicious.register(coretemp, vicious.widgets.thermal, function(widget, args)
     value =  markup(yellow, value)
   end
 
-  return markup(gray, 'CPU ') .. value
-end, 7, 'thermal_zone0')
+  return markup(gray, "CPU ") .. value
+end, 7, "thermal_zone0")
 
 -- memory
 local memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, markup(gray, 'Mem ') .. '$1%', 37)
+vicious.register(memwidget, vicious.widgets.mem, markup(gray, "Mem ") .. "$1%", 37)
 
 -- wifi
 local wifi = wibox.widget.textbox()
-vicious.register(wifi, vicious.widgets.wifi, markup(gray, 'Wifi ') .. '${ssid} ${linp}%', 17, 'wlp2s0')
+vicious.register(wifi, vicious.widgets.wifi, markup(gray, "Wifi ") .. "${ssid} ${linp}%", 17, "wlp2s0")
 
 -- volume
 local volume = wibox.widget.textbox()
 vicious.register(volume, vicious.widgets.volume, function(widget, args)
-  local value = tostring(args[1]) .. '%'
+  local value = tostring(args[1]) .. "%"
 
-  if args[2] == '♩' then
-    value = value .. ' [Muted]'
+  if args[2] == "♩" then
+    value = value .. " [Muted]"
   end
 
-  return markup(gray, 'Vol ') .. value
-end, 123, 'Master')
+  return markup(gray, "Vol ") .. value
+end, 123, "Master")
 -- }}}
 
 -- {{{ Wibar
@@ -378,10 +378,10 @@ local globalkeys = awful.util.table.join(
             { description = "show the menubar", group = "launcher" }),
 
   -- User programs
-  awful.key({ modkey }, ']',      function() awful.util.spawn('nautilus') end),
-  awful.key({ modkey }, '\\',     function() awful.util.spawn('chromium') end),
-  awful.key({ modkey }, '/',      function() awful.util.spawn('gimp') end),
-  awful.key({},         'Print',  function() awful.util.spawn('scrot -e "mv $f ~/Pictures/ 2>/dev/null"') end)
+  awful.key({ modkey }, "]",      function() awful.util.spawn("nautilus") end),
+  awful.key({ modkey }, "\\",     function() awful.util.spawn("chromium") end),
+  awful.key({ modkey }, "/",      function() awful.util.spawn("gimp") end),
+  awful.key({},         "Print",  function() awful.util.spawn("scrot -e \"mv $f ~/Pictures/ 2>/dev/null\"") end)
 )
 
 local clientkeys = awful.util.table.join(
@@ -501,7 +501,7 @@ awful.rules.rules = {
 
   -- Set Gimp to always map on the tag named "7" on screen 1.
   {
-    rule       = { class = 'Gimp' },
+    rule       = { class = "Gimp" },
     properties = { screen = 1, tag = "7" }
   },
 }
@@ -576,6 +576,6 @@ client.connect_signal("mouse::enter", function(c)
   end
 end)
 
-client.connect_signal('focus', function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal('unfocus', function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
