@@ -3,6 +3,7 @@ local gears           = require('gears')
 local awful           = require('awful')
       awful.rules     = require('awful.rules')
                         require('awful.autofocus')
+local hotkeys_popup   = require("awful.hotkeys_popup").widget
 local wibox           = require('wibox')
 local beautiful       = require('beautiful')
 local naughty         = require('naughty')
@@ -84,7 +85,10 @@ end
 -- Create a laucher widget and a main menu
 local mymainmenu = awful.menu({
   items = {
-    { 'awesome', { { 'restart', awesome.restart } } , beautiful.awesome_icon },
+    { 'awesome', {
+      { "hotkeys", function() return false, hotkeys_popup.show_help end},
+      { 'restart', awesome.restart }
+    } , beautiful.awesome_icon },
     { 'logout',   awesome.quit },
     { 'suspend',  'systemctl suspend' },
     { 'reboot',   'systemctl reboot' },
@@ -272,6 +276,8 @@ end
 
 -- {{{ Key bindings
 local globalkeys = awful.util.table.join(
+  awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
+            { description="show help", group="awesome" }),
   awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
             { description = "view previous", group = "tag" }),
   awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
