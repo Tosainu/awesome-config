@@ -132,12 +132,14 @@ local gray   = "#777777"
 local separator = wibox.widget.textbox()
 separator:set_markup(markup(gray, " | "))
 
+local mywidgets = {}
+
 -- clock
-local mytextclock = awful.widget.textclock("%a, %b %d, %H:%M ", 60)
+mywidgets.clock = awful.widget.textclock("%a, %b %d, %H:%M ", 60)
 
 -- battery
-local battery = wibox.widget.textbox()
-vicious.register(battery, vicious.widgets.bat, function(widgets, args)
+mywidgets.battery = wibox.widget.textbox()
+vicious.register(mywidgets.battery, vicious.widgets.bat, function(widgets, args)
   local value = tostring(args[2]) .. "%"
 
   if args[2] <= 15 then
@@ -154,8 +156,8 @@ vicious.register(battery, vicious.widgets.bat, function(widgets, args)
 end, 60, "BAT1")
 
 -- temp
-local coretemp = wibox.widget.textbox()
-vicious.register(coretemp, vicious.widgets.thermal, function(widget, args)
+mywidgets.cputemp = wibox.widget.textbox()
+vicious.register(mywidgets.cputemp, vicious.widgets.thermal, function(widget, args)
   local value = tostring(args[1]) .. "°C"
 
   if args[1] >= 80 then
@@ -168,16 +170,16 @@ vicious.register(coretemp, vicious.widgets.thermal, function(widget, args)
 end, 7, "thermal_zone0")
 
 -- memory
-local memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, markup(gray, "Mem ") .. "$1%", 37)
+mywidgets.memory = wibox.widget.textbox()
+vicious.register(mywidgets.memory, vicious.widgets.mem, markup(gray, "Mem ") .. "$1%", 37)
 
 -- wifi
-local wifi = wibox.widget.textbox()
-vicious.register(wifi, vicious.widgets.wifi, markup(gray, "Wifi ") .. "${ssid} ${linp}%", 17, "wlp2s0")
+mywidgets.wifi = wibox.widget.textbox()
+vicious.register(mywidgets.wifi, vicious.widgets.wifi, markup(gray, "Wifi ") .. "${ssid} ${linp}%", 17, "wlp2s0")
 
 -- volume
-local volume = wibox.widget.textbox()
-vicious.register(volume, vicious.widgets.volume, function(widget, args)
+mywidgets.volume = wibox.widget.textbox()
+vicious.register(mywidgets.volume, vicious.widgets.volume, function(widget, args)
   local value = tostring(args[1]) .. "%"
 
   if args[2] == "♩" then
@@ -277,17 +279,17 @@ awful.screen.connect_for_each_screen(function(s)
       layout = wibox.layout.fixed.horizontal,
       wibox.widget.systray(),
       separator,
-      wifi,
+      mywidgets.wifi,
       separator,
-      coretemp,
+      mywidgets.cputemp,
       separator,
-      memwidget,
+      mywidgets.memory,
       separator,
-      battery,
+      mywidgets.battery,
       separator,
-      volume,
+      mywidgets.volume,
       separator,
-      mytextclock,
+      mywidgets.clock,
       s.mylayoutbox,
     },
   }
