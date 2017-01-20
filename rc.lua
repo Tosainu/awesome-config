@@ -44,9 +44,6 @@ end
 -- Themes define colours, icons, and wallpapers
 beautiful.init(awful.util.getdir("config") .. "/theme.lua")
 
--- This is used later as the default terminal and editor to run.
-local terminal = "termite"
-
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -59,6 +56,12 @@ awful.layout.layouts = {
   awful.layout.suit.floating,
   awful.layout.suit.tile,
 }
+
+local file_manager  = "nautilus"
+local image_editor  = "gimp"
+local screen_shot   = "scrot -e 'mv $f ~/Pictures/ 2>/dev/null'"
+local terminal      = "termite"
+local web_browser   = "chromium"
 -- }}}
 
 -- {{{ Helper functions
@@ -378,13 +381,13 @@ local globalkeys = awful.util.table.join(
             { description = "show the menubar", group = "launcher" }),
 
   -- User programs
-  awful.key({ modkey }, "]",      function() awful.util.spawn("nautilus") end,
+  awful.key({ modkey }, "]",      function() awful.util.spawn(file_manager) end,
             { description = "open a file manager", group = "launcher" }),
-  awful.key({ modkey }, "\\",     function() awful.util.spawn("chromium") end,
+  awful.key({ modkey }, "\\",     function() awful.util.spawn(web_browser) end,
             { description = "open a web browser", group = "launcher" }),
-  awful.key({ modkey }, "/",      function() awful.util.spawn("gimp") end,
+  awful.key({ modkey }, "/",      function() awful.util.spawn(image_editor) end,
             { description = "open an image editor", group = "launcher" }),
-  awful.key({},         "Print",  function() awful.util.spawn("scrot -e \"mv $f ~/Pictures/ 2>/dev/null\"") end,
+  awful.key({},         "Print",  function() awful.util.spawn(screen_shot) end,
             { description = "capture a screen shot", group = "launcher" })
 )
 
