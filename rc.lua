@@ -64,6 +64,10 @@ local manual        = "man awesome"
 local screen_shot   = "scrot -e 'mv $f ~/Pictures/ 2>/dev/null'"
 local terminal      = "termite"
 local web_browser   = "chromium"
+
+local battery         = "BAT1"
+local thermal_zone    = "thermal_zone0"
+local wifi_interface  = "wlp2s0"
 -- }}}
 
 -- {{{ Helper functions
@@ -153,7 +157,7 @@ vicious.register(mywidgets.battery, vicious.widgets.bat, function(widgets, args)
   end
 
   return markup(gray, "Bat ") .. value
-end, 60, "BAT1")
+end, 60, battery)
 
 -- temp
 mywidgets.cputemp = wibox.widget.textbox()
@@ -167,7 +171,7 @@ vicious.register(mywidgets.cputemp, vicious.widgets.thermal, function(widget, ar
   end
 
   return markup(gray, "CPU ") .. value
-end, 7, "thermal_zone0")
+end, 7, thermal_zone)
 
 -- memory
 mywidgets.memory = wibox.widget.textbox()
@@ -175,7 +179,7 @@ vicious.register(mywidgets.memory, vicious.widgets.mem, markup(gray, "Mem ") .. 
 
 -- wifi
 mywidgets.wifi = wibox.widget.textbox()
-vicious.register(mywidgets.wifi, vicious.widgets.wifi, markup(gray, "Wifi ") .. "${ssid} ${linp}%", 17, "wlp2s0")
+vicious.register(mywidgets.wifi, vicious.widgets.wifi, markup(gray, "Wifi ") .. "${ssid} ${linp}%", 17, wifi_interface)
 
 -- volume
 mywidgets.volume = wibox.widget.textbox()
