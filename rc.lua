@@ -409,15 +409,15 @@ local globalkeys = awful.util.table.join(
             { description = "show the menubar", group = "launcher" }),
 
   -- User programs
-  awful.key({ modkey }, "[",      function() awful.util.spawn(run_in_terminal(editor)) end,
+  awful.key({ modkey }, "[",      function() awful.spawn(run_in_terminal(editor)) end,
             { description = "open a text editor", group = "launcher" }),
-  awful.key({ modkey }, "]",      function() awful.util.spawn(file_manager) end,
+  awful.key({ modkey }, "]",      function() awful.spawn(file_manager) end,
             { description = "open a file manager", group = "launcher" }),
-  awful.key({ modkey }, "\\",     function() awful.util.spawn(web_browser) end,
+  awful.key({ modkey }, "\\",     function() awful.spawn(web_browser) end,
             { description = "open a web browser", group = "launcher" }),
-  awful.key({ modkey }, "/",      function() awful.util.spawn(image_editor) end,
+  awful.key({ modkey }, "/",      function() awful.spawn(image_editor) end,
             { description = "open an image editor", group = "launcher" }),
-  awful.key({},         "Print",  function() awful.util.spawn(screen_shot) end,
+  awful.key({},         "Print",  function() awful.spawn(screen_shot) end,
             { description = "capture a screen shot", group = "launcher" })
 )
 
