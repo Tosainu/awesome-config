@@ -153,7 +153,7 @@ separator:set_markup(markup(gray, " | "))
 local mywidgets = {}
 
 -- clock
-mywidgets.clock = awful.widget.textclock("%a, %b %d, %H:%M ", 60)
+mywidgets.clock = wibox.widget.textclock("%a, %b %d, %H:%M ")
 
 -- battery
 mywidgets.battery = wibox.widget.textbox()
