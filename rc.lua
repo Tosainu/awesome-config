@@ -129,7 +129,7 @@ local mymainmenu = awful.menu({
       { "edit config",  run_in_terminal(editor .. " " .. awesome.conffile) },
       { "restart",      awesome.restart },
     }, beautiful.awesome_icon },
-    { "logout",   awesome.quit },
+    { "logout",   function() awesome.quit() end},
     { "suspend",  "systemctl suspend" },
     { "reboot",   "systemctl reboot" },
     { "halt",     "systemctl poweroff" }
