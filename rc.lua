@@ -157,16 +157,18 @@ mywidgets.clock = wibox.widget.textclock("%a, %b %d, %H:%M ")
 
 -- battery
 mywidgets.battery = wibox.widget.textbox()
-vicious.register(mywidgets.battery, vicious.widgets.bat, function(widgets, args)
-  local value = tostring(args[2]) .. "%"
+vicious.register(mywidgets.battery, vicious.widgets.bat, function(widget, args)
+  local level = args[2]
+  local state = args[1]
+  local value = tostring(level) .. "%"
 
-  if args[2] <= 15 then
+  if level <= 15 then
     value = markup(red, value)
-  elseif args[2] <= 30 then
+  elseif level <= 30 then
     value = markup(yellow, value)
   end
 
-  if args[1] == "⌁" or args[1] == "↯" or args[1] == "+" then
+  if state == "⌁" or state == "↯" or state == "+" then
     value = value .. " AC"
   end
 
@@ -176,11 +178,12 @@ end, 60, battery)
 -- temp
 mywidgets.cputemp = wibox.widget.textbox()
 vicious.register(mywidgets.cputemp, vicious.widgets.thermal, function(widget, args)
-  local value = tostring(args[1]) .. "°C"
+  local cputemp = args[1]
+  local value   = tostring(cputemp) .. "°C"
 
-  if args[1] >= 80 then
+  if cputemp >= 80 then
     value =  markup(red, value)
-  elseif args[1] >= 70 then
+  elseif cputemp >= 70 then
     value =  markup(yellow, value)
   end
 
@@ -189,22 +192,21 @@ end, 7, thermal_zone)
 
 -- memory
 mywidgets.memory = wibox.widget.textbox()
-vicious.register(mywidgets.memory, vicious.widgets.mem, markup(gray, "Mem ") .. "$1%", 37)
+vicious.register(mywidgets.memory, vicious.widgets.mem,
+                 markup(gray, "Mem ") .. "$1%", 37)
 
 -- wifi
 mywidgets.wifi = wibox.widget.textbox()
-vicious.register(mywidgets.wifi, vicious.widgets.wifi, markup(gray, "Wifi ") .. "${ssid} ${linp}%", 17, wifi_interface)
+vicious.register(mywidgets.wifi, vicious.widgets.wifi,
+                 markup(gray, "Wifi ") .. "${ssid} ${linp}%", 17, wifi_interface)
 
 -- volume
 mywidgets.volume = wibox.widget.textbox()
 vicious.register(mywidgets.volume, vicious.widgets.volume, function(widget, args)
-  local value = tostring(args[1]) .. "%"
-
-  if args[2] == "♩" then
-    value = value .. " [Muted]"
-  end
-
-  return markup(gray, "Vol ") .. value
+  local level = args[1]
+  local state = args[2]
+  local label = { ["♫"] = "", ["♩"] = " [Muted]" }
+  return markup(gray, "Vol ") .. level .. "%" .. label[state]
 end, 123, "Master")
 -- }}}
 
