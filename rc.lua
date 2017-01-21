@@ -312,6 +312,7 @@ awful.screen.connect_for_each_screen(function(s)
     },
   }
 end)
+-- }}}
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
