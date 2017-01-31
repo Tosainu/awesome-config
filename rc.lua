@@ -142,9 +142,9 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- Widgets {{{
 -- color
-local red    = "#ff3000"
+local red    = "#e81c4f"
 local yellow = "#ffe100"
-local gray   = "#777777"
+local gray   = "#9699a0"
 
 -- Separator
 local separator = wibox.widget.textbox()

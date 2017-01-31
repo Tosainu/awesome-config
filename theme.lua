@@ -6,21 +6,21 @@ theme = {}
 
 theme.font          = "Terminus 8"
 
-theme.bg_normal     = "#222222"
-theme.bg_focus      = "#444444"
-theme.bg_urgent     = "#ff0000"
-theme.bg_minimize   = "#444444"
+theme.bg_normal     = "#131619"
+theme.bg_focus      = "#444448"
+theme.bg_urgent     = "#e81c4f"
+theme.bg_minimize   = "#292f33"
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#aaaaaa"
+theme.fg_normal     = "#e6e6e6"
 theme.fg_focus      = "#ffffff"
 theme.fg_urgent     = "#ffffff"
-theme.fg_minimize   = "#ffffff"
+theme.fg_minimize   = theme.fg_normal
 
 theme.border_width  = 1
-theme.border_normal = "#222222"
-theme.border_focus  = "#222222"
-theme.border_marked = "#222222"
+theme.border_normal = "#222426"
+theme.border_focus  = "#222426"
+theme.border_marked = "#222426"
 
 -- There are other variable sets
 -- overriding the default one when
@@ -40,7 +40,7 @@ theme.taglist_squares_unsel = "/usr/share/awesome/themes/default/taglist/squarew
 -- menu_[bg|fg]_[normal|focus]
 -- menu_[border_color|border_width]
 theme.menu_submenu_icon = "/usr/share/awesome/themes/default/submenu.png"
-theme.menu_height = 15
+theme.menu_height = 16
 theme.menu_width  = 100
 
 -- You can add as many variables as
@@ -73,7 +73,6 @@ theme.titlebar_maximized_button_normal_active = "/usr/share/awesome/themes/defau
 theme.titlebar_maximized_button_focus_active  = "/usr/share/awesome/themes/default/titlebar/maximized_focus_active.png"
 
 theme.wallpaper = "~/Pictures/wall.png"
-theme.wallpaper_vertical = "~/Pictures/wall_v.png"
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = "/usr/share/awesome/themes/default/layouts/fairhw.png"
