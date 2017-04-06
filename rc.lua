@@ -534,6 +534,18 @@ awful.rules.rules = {
     properties = { floating = true }
   },
 
+  -- Teminal enulators
+  {
+    rule_any = {
+      class = {
+        "Gvim",
+        "Temite",
+        "XTerm",
+      },
+    },
+    properties = { size_hints_honor = false }
+  },
+
   -- Add titlebars to normal clients and dialogs
   {
     rule_any = {
