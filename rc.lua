@@ -156,6 +156,10 @@ local mywidgets = {}
 -- clock
 mywidgets.clock = wibox.widget.textclock("%a, %b %d, %H:%M ")
 
+-- calendar
+mywidgets.calendar = awful.widget.calendar_popup.month();
+mywidgets.calendar:attach(mywidgets.clock)
+
 -- battery
 mywidgets.battery = wibox.widget.textbox()
 vicious.register(mywidgets.battery, vicious.widgets.bat, function(widget, args)
