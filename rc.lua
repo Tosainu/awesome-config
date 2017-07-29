@@ -147,11 +147,10 @@ local red    = "#e81c4f"
 local yellow = "#ffe100"
 local gray   = "#9699a0"
 
--- Separator
-local separator = wibox.widget.textbox()
-separator:set_markup(markup(gray, " | "))
-
 local mywidgets = {}
+
+-- Separator
+mywidgets.separator = wibox.widget.textbox(markup(gray, " | "))
 
 -- clock
 mywidgets.clock = wibox.widget.textclock("%a, %b %d, %H:%M ")
@@ -303,17 +302,17 @@ awful.screen.connect_for_each_screen(function(s)
     {
       layout = wibox.layout.fixed.horizontal,
       wibox.widget.systray(),
-      separator,
+      mywidgets.separator,
       mywidgets.wifi,
-      separator,
+      mywidgets.separator,
       mywidgets.cputemp,
-      separator,
+      mywidgets.separator,
       mywidgets.memory,
-      separator,
+      mywidgets.separator,
       mywidgets.battery,
-      separator,
+      mywidgets.separator,
       mywidgets.volume,
-      separator,
+      mywidgets.separator,
       mywidgets.clock,
       s.mylayoutbox,
     },
