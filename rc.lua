@@ -156,7 +156,7 @@ mywidgets.separator = wibox.widget.textbox(markup(gray, " | "))
 mywidgets.clock = wibox.widget.textclock("%a, %b %d, %H:%M ")
 
 -- calendar
-mywidgets.calendar = awful.widget.calendar_popup.month();
+mywidgets.calendar = awful.widget.calendar_popup.month({ start_sunday = true });
 mywidgets.calendar:attach(mywidgets.clock)
 
 -- battery
