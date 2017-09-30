@@ -535,6 +535,7 @@ awful.rules.rules = {
         "Event Tester",  -- xev.
       },
     },
+    except     = { name = "Virtual Machine Manager" },
     properties = { floating = true }
   },
 
