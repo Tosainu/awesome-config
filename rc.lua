@@ -555,7 +555,7 @@ awful.rules.rules = {
     rule_any = {
       type = { "normal", "dialog" }
     },
-    properties = { titlebars_enabled = false }
+    properties = { titlebars_enabled = true }
   },
 
   -- Set Gimp to always map on the tag named "7" on screen 1.
@@ -625,6 +625,20 @@ client.connect_signal("request::titlebars", function(c)
     },
     layout = wibox.layout.align.horizontal
   }
+
+  -- Hide the titlebar if the client is not floating
+  if not c.floating then
+    awful.titlebar.hide(c)
+  end
+end)
+
+-- Toggle titlebar
+client.connect_signal("property::floating", function(c)
+  if c.floating then
+    awful.titlebar.show(c)
+  else
+    awful.titlebar.hide(c)
+  end
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
