@@ -263,7 +263,8 @@ awful.screen.connect_for_each_screen(function(s)
   set_wallpaper(s)
 
   -- Each screen has its own tag table.
-  awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[2])
+  awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" },
+            s, awful.layout.layouts[2])
 
   -- Create a promptbox for each screen
   s.mypromptbox = awful.widget.prompt()
@@ -457,7 +458,7 @@ local clientkeys = awful.util.table.join(
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
-for i = 1, 9 do
+for i = 1, 12 do
   globalkeys = awful.util.table.join(globalkeys,
     -- View tag only.
     awful.key({ modkey }, "#" .. i + 9, function()
