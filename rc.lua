@@ -518,7 +518,7 @@ awful.rules.rules = {
       buttons      = clientbuttons,
       focus        = awful.client.focus.filter,
       keys         = clientkeys,
-      placement    = awful.placement.no_overlap+awful.placement.no_offscreen,
+      placement    = awful.placement.no_overlap + awful.placement.no_offscreen,
       raise        = true,
       screen       = awful.screen.preferred,
     }
@@ -530,13 +530,12 @@ awful.rules.rules = {
       class = {
         "Gnome-mplayer",
         "MPlayer",
-        "Virt-manager",
+        "mpv",
       },
       name = {
         "Event Tester",  -- xev.
       },
     },
-    except     = { name = "Virtual Machine Manager" },
     properties = { floating = true }
   },
 
@@ -564,6 +563,17 @@ awful.rules.rules = {
   {
     rule       = { class = "Gimp" },
     properties = { screen = 1, tag = "7" }
+  },
+
+  {
+    rule       = { class = "Virt-manager" },
+    except     = { name = "Virtual Machine Manager" },
+    properties = { floating = true }
+  },
+
+  {
+    rule       = { class = "Inkscape", type = "normal" },
+    properties = { floating = false }
   },
 }
 -- }}}
