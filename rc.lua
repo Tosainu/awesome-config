@@ -559,6 +559,7 @@ awful.rules.rules = {
     rule_any = {
       type = { "normal", "dialog" }
     },
+    except     = { name = "JidePopup" },
     properties = { titlebars_enabled = true }
   },
 
