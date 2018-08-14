@@ -178,7 +178,7 @@ vicious.register(mywidgets.battery, vicious.widgets.bat, function(widget, args)
   end
 
   return markup(gray, "Bat ") .. value
-end, 60, battery)
+end, 61, battery)
 
 -- temp
 mywidgets.cputemp = wibox.widget.textbox()
@@ -193,17 +193,17 @@ vicious.register(mywidgets.cputemp, vicious.widgets.thermal, function(widget, ar
   end
 
   return markup(gray, "CPU ") .. value
-end, 7, thermal_zone)
+end, 11, thermal_zone)
 
 -- memory
 mywidgets.memory = wibox.widget.textbox()
 vicious.register(mywidgets.memory, vicious.widgets.mem,
-                 markup(gray, "Mem ") .. "$1% " .. markup(gray, "| Swp ") .. "$5%", 37)
+                 markup(gray, "Mem ") .. "$1% " .. markup(gray, "| Swp ") .. "$5%", 13)
 
 -- wifi
 mywidgets.wifi = wibox.widget.textbox()
 vicious.register(mywidgets.wifi, vicious.widgets.wifi,
-                 markup(gray, "Wifi ") .. "${ssid} ${linp}%", 17, wifi_interface)
+                 markup(gray, "Wifi ") .. "${ssid} ${linp}%", 23, wifi_interface)
 
 -- volume
 mywidgets.volume = wibox.widget.textbox()
@@ -212,7 +212,7 @@ vicious.register(mywidgets.volume, vicious.widgets.volume, function(widget, args
   local state = args[2]
   local label = { ["♫"] = "", ["♩"] = " [Muted]" }
   return markup(gray, "Vol ") .. level .. "%" .. label[state]
-end, 123, "Master")
+end, 113, "Master")
 -- }}}
 
 -- {{{ Wibar
