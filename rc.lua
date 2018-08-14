@@ -198,7 +198,7 @@ end, 7, thermal_zone)
 -- memory
 mywidgets.memory = wibox.widget.textbox()
 vicious.register(mywidgets.memory, vicious.widgets.mem,
-                 markup(gray, "Mem ") .. "$1%", 37)
+                 markup(gray, "Mem ") .. "$1% " .. markup(gray, "| Swp ") .. "$5%", 37)
 
 -- wifi
 mywidgets.wifi = wibox.widget.textbox()
