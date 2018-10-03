@@ -131,7 +131,7 @@ local mymainmenu = awful.menu({
       { "restart",      awesome.restart },
     }, beautiful.awesome_icon },
     { "logout",   function() awesome.quit() end},
-    { "lock",     "light-locker-command -l"},
+    { "lock",     "xautolock -locknow"},
     { "suspend",  "systemctl suspend" },
     { "reboot",   "systemctl reboot" },
     { "halt",     "systemctl poweroff" }
