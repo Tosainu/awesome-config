@@ -8,6 +8,8 @@ local theme = dofile(filesystem.get_themes_dir() .. "default/theme.lua")
 -- fonts
 theme.font              = "xos4 Terminus 8"
 theme.notification_font = "Sans 9"
+theme.notification_width = 448
+theme.notification_icon_size = 64
 
 -- colors
 theme.bg_normal     = "#131619"
