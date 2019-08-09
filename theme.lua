@@ -6,26 +6,31 @@ local xresources    = require("beautiful.xresources")
 local theme = dofile(filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- fonts
-theme.font              = "xos4 Terminus 8"
-theme.notification_font = "Sans 9"
+theme.font = "Sans Medium 10"
+
+theme.notification_font = "Sans Medium 9"
 theme.notification_width = 448
 theme.notification_icon_size = 64
 
+theme.menu_font = "Sans Medium 9"
+theme.menu_height = 18
+theme.wibar_height = 20
+
 -- colors
-theme.bg_normal     = "#131619"
-theme.bg_focus      = "#444448"
-theme.bg_urgent     = "#e81c4f"
-theme.bg_minimize   = "#292f33"
+theme.bg_normal     = "#212121"
+theme.bg_focus      = "#616161"
+theme.bg_urgent     = "#f44336"
+theme.bg_minimize   = "#424242"
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#e6e6e6"
-theme.fg_focus      = "#ffffff"
-theme.fg_urgent     = "#ffffff"
+theme.fg_normal     = "#fafafa"
+theme.fg_focus      = theme.fg_normal
+theme.fg_urgent     = theme.fg_normal
 theme.fg_minimize   = theme.fg_normal
 
-theme.border_normal = "#222426"
-theme.border_focus  = "#222426"
-theme.border_marked = "#222426"
+theme.border_normal = theme.bg_normal
+theme.border_focus  = "#757575"
+theme.border_marked = theme.border_focus
 
 -- Generate taglist squares:
 local taglist_square_size = xresources.apply_dpi(5)

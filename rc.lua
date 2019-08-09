@@ -173,11 +173,12 @@ vicious.register(mywidgets.battery, vicious.widgets.bat, function(widget, args)
     value = markup(yellow, value)
   end
 
+  local icon = "🔋 " 
   if state == "⌁" or state == "↯" or state == "+" then
-    value = value .. " AC"
+    icon = "⚡ "
   end
 
-  return markup(gray, "Bat ") .. value
+  return icon .. value
 end, 61, battery)
 
 -- temp
@@ -192,26 +193,24 @@ vicious.register(mywidgets.cputemp, vicious.widgets.thermal, function(widget, ar
     value =  markup(yellow, value)
   end
 
-  return markup(gray, "CPU ") .. value
+  return "💻 " .. value
 end, 11, thermal_zone)
 
 -- memory
 mywidgets.memory = wibox.widget.textbox()
-vicious.register(mywidgets.memory, vicious.widgets.mem,
-                 markup(gray, "Mem ") .. "$1% " .. markup(gray, "| Swp ") .. "$5%", 13)
+vicious.register(mywidgets.memory, vicious.widgets.mem, "🧰 $1% / $5%", 13)
 
 -- wifi
 mywidgets.wifi = wibox.widget.textbox()
-vicious.register(mywidgets.wifi, vicious.widgets.wifi,
-                 markup(gray, "Wifi ") .. "${ssid} ${linp}%", 23, wifi_interface)
+vicious.register(mywidgets.wifi, vicious.widgets.wifi, "📶 ${ssid} ${linp}%", 23, wifi_interface)
 
 -- volume
 mywidgets.volume = wibox.widget.textbox()
 vicious.register(mywidgets.volume, vicious.widgets.volume, function(widget, args)
   local level = args[1]
   local state = args[2]
-  local label = { ["♫"] = "", ["♩"] = " [Muted]" }
-  return markup(gray, "Vol ") .. level .. "%" .. label[state]
+  local icon = { ["♫"] = "🔊 ", ["♩"] = "🔈 " }
+  return icon[state] .. level .. "%"
 end, 113, "Master")
 -- }}}
 
@@ -613,7 +612,7 @@ client.connect_signal("request::titlebars", function(c)
     end)
   )
 
-  awful.titlebar(c):setup {
+  awful.titlebar(c, { size = beautiful.wibar_height }):setup {
     -- Left
     {
       awful.titlebar.widget.iconwidget(c),
