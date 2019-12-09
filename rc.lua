@@ -1,15 +1,23 @@
--- {{{ Required Libraries
-local awful         = require("awful")
-                      require("awful.autofocus")
-local hotkeys_popup = require("awful.hotkeys_popup").widget
-                      require("awful.hotkeys_popup.keys")
-local beautiful     = require("beautiful")
-local gears         = require("gears")
-local menubar       = require("menubar")
-local naughty       = require("naughty")
-local vicious       = require("vicious")
-local wibox         = require("wibox")
---- }}}
+-- If LuaRocks is installed, make sure that packages installed through it are
+-- found (e.g. lgi). If LuaRocks is not installed, do nothing.
+pcall(require, "luarocks.loader")
+
+local gears = require("gears")
+local awful = require("awful")
+require("awful.autofocus")
+
+local beautiful = require("beautiful")
+local menubar = require("menubar")
+local naughty = require("naughty")
+local wibox = require("wibox")
+
+-- Enable hotkeys help widget for VIM and other apps
+-- when client with a matching name is opened:
+local hotkeys_popup = require("awful.hotkeys_popup")
+require("awful.hotkeys_popup.keys")
+
+-- https://github.com/vicious-widgets/vicious
+local vicious = require("vicious")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -86,37 +94,12 @@ local wifi_interface  = "wlp2s0"
 -- }}}
 
 -- {{{ Helper functions
-local function client_menu_toggle_fn()
-  local instance = nil
-
-  return function()
-    if instance and instance.wibox.visible then
-      instance:hide()
-      instance = nil
-    else
-      instance = awful.menu.clients({ theme = { width = 250 } })
-    end
-  end
-end
-
 local function markup(color, text)
   return "<span foreground=\"" .. tostring(color) .. "\">" .. tostring(text) .. "</span>"
 end
 
 local function run_in_terminal(command)
   return terminal .. " -e '" .. tostring(command) .. "'"
-end
-
-local function set_wallpaper(s)
-  -- Wallpaper
-  if beautiful.wallpaper then
-    local wallpaper = beautiful.wallpaper
-    -- If wallpaper is a function, call it with the screen
-    if type(wallpaper) == "function" then
-      wallpaper = wallpaper(s)
-    end
-    gears.wallpaper.maximized(wallpaper, s)
-  end
 end
 -- }}}
 
@@ -125,7 +108,7 @@ end
 local mymainmenu = awful.menu({
   items = {
     { "awesome", {
-      { "hotkeys",      function() return false, hotkeys_popup.show_help end },
+      { "hotkeys",      function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
       { "manual",       run_in_terminal(manual) },
       { "edit config",  run_in_terminal(editor .. " " .. awesome.conffile) },
       { "restart",      awesome.restart },
@@ -238,22 +221,27 @@ local tasklist_buttons = awful.util.table.join(
     if c == client.focus then
       c.minimized = true
     else
-      -- Without this, the following
-      -- :isvisible() makes no sense
-      c.minimized = false
-      if not c:isvisible() and c.first_tag then
-        c.first_tag:view_only()
-      end
-      -- This will also un-minimize
-      -- the client, if needed
-      client.focus = c
-      c:raise()
+      c:emit_signal("request::activate", "tasklist", { raise = true })
     end
   end),
-  awful.button({},         3, client_menu_toggle_fn()),
+  awful.button({},         3, function()
+    awful.menu.client_list({ theme = { width = 250 } })
+  end),
   awful.button({},         4, function() awful.client.focus.byidx( 1) end),
   awful.button({},         5, function() awful.client.focus.byidx(-1) end)
 )
+
+local function set_wallpaper(s)
+  -- Wallpaper
+  if beautiful.wallpaper then
+    local wallpaper = beautiful.wallpaper
+    -- If wallpaper is a function, call it with the screen
+    if type(wallpaper) == "function" then
+      wallpaper = wallpaper(s)
+    end
+    gears.wallpaper.maximized(wallpaper, s)
+  end
+end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
@@ -268,7 +256,6 @@ awful.screen.connect_for_each_screen(function(s)
 
   -- Create a promptbox for each screen
   s.mypromptbox = awful.widget.prompt()
-
   -- Create an imagebox widget which will contains an icon indicating which layout we're using.
   -- We need one layoutbox per screen.
   s.mylayoutbox = awful.widget.layoutbox(s)
@@ -280,10 +267,18 @@ awful.screen.connect_for_each_screen(function(s)
   ))
 
   -- Create a taglist widget
-  s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+  s.mytaglist = awful.widget.taglist {
+    screen  = s,
+    filter  = awful.widget.taglist.filter.all,
+    buttons = taglist_buttons
+  }
 
   -- Create a tasklist widget
-  s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+  s.mytasklist = awful.widget.tasklist {
+    screen  = s,
+    filter  = awful.widget.tasklist.filter.currenttags,
+    buttons = tasklist_buttons
+  }
 
   -- Create the wibox
   s.mywibox = awful.wibar({ position = "top", screen = s })
@@ -394,8 +389,7 @@ local globalkeys = awful.util.table.join(
     local c = awful.client.restore()
     -- Focus restored client
     if c then
-      client.focus = c
-      c:raise()
+      c:emit_signal("request::activate", "key.unminimize", { raise = true })
     end
   end,      { description = "restore minimized", group = "client" }),
 
@@ -454,7 +448,15 @@ local clientkeys = awful.util.table.join(
   awful.key({ modkey,           }, "m",       function(c)
     c.maximized = not c.maximized
     c:raise()
-  end,      { description = "maximize", group = "client" })
+  end,      { description = "(un)maximize", group = "client" }),
+  awful.key({ modkey, "Control" }, "m",       function (c)
+    c.maximized_vertical = not c.maximized_vertical
+    c:raise()
+  end, { description = "(un)maximize vertically", group = "client" }),
+  awful.key({ modkey, "Shift"   }, "m",       function (c)
+    c.maximized_horizontal = not c.maximized_horizontal
+    c:raise()
+  end, { description = "(un)maximize horizontally", group = "client" })
 )
 
 -- Bind all key numbers to tags.
@@ -500,9 +502,17 @@ for i = 1, 12 do
 end
 
 local clientbuttons = awful.util.table.join(
-  awful.button({},         1, function(c) client.focus = c; c:raise() end),
-  awful.button({ modkey }, 1, awful.mouse.client.move),
-  awful.button({ modkey }, 3, awful.mouse.client.resize)
+  awful.button({},         1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+  end),
+  awful.button({ modkey }, 1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    awful.mouse.client.move(c)
+  end),
+  awful.button({ modkey }, 3, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    awful.mouse.client.resize(c)
+  end)
 )
 
 -- Set keys
@@ -529,14 +539,32 @@ awful.rules.rules = {
   -- Floating clients.
   {
     rule_any = {
+      instance = {
+        "DTA",  -- Firefox addon DownThemAll.
+        "copyq",  -- Includes session name in class.
+        "pinentry",
+      },
       class = {
+        "Blueman-manager",
         "Gnome-mplayer",
+        "Kruler",
         "MPlayer",
+        "MessageWin",  -- kalarm.
+        "Sxiv",
+        "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
+        "Wpa_gui",
         "mpv",
+        "veromix",
+        "xtightvncviewer"
       },
       name = {
         "Event Tester",  -- xev.
       },
+      role = {
+        "AlarmWindow",  -- Thunderbird's calendar.
+        "ConfigManager",  -- Thunderbird's about:config.
+        "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
+      }
     },
     properties = { floating = true }
   },
@@ -601,13 +629,11 @@ client.connect_signal("request::titlebars", function(c)
   -- buttons for the titlebar
   local buttons = awful.util.table.join(
     awful.button({}, 1, function()
-      client.focus = c
-      c:raise()
+      c:emit_signal("request::activate", "titlebar", { raise = true })
       awful.mouse.client.move(c)
     end),
     awful.button({}, 3, function()
-      client.focus = c
-      c:raise()
+      c:emit_signal("request::activate", "titlebar", { raise = true })
       awful.mouse.client.resize(c)
     end)
   )
@@ -658,10 +684,7 @@ end)
 
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
-  if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-    and awful.client.focus.filter(c) then
-    client.focus = c
-  end
+  c:emit_signal("request::activate", "mouse_enter", { raise = false })
 end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
