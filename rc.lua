@@ -440,6 +440,8 @@ local clientkeys = awful.util.table.join(
             { description = "toggle sticky",  group = "client" }),
   awful.key({ modkey,           }, "t",       function(c) c.ontop = not c.ontop end,
             { description = "toggle keep on top", group = "client" }),
+  awful.key({ modkey, "Shift"   }, "t",       function(c) awful.titlebar.toggle(c) end,
+            { description = "toggle titlebar", group = "client" }),
   awful.key({ modkey,           }, "n",       function(c)
     -- The client currently has the input focus, so it cannot be
     -- minimized, since minimized clients can't have the focus.
@@ -581,15 +583,6 @@ awful.rules.rules = {
     properties = { size_hints_honor = false }
   },
 
-  -- Add titlebars to normal clients and dialogs
-  {
-    rule_any = {
-      type = { "normal", "dialog" }
-    },
-    except     = { name = "JidePopup" },
-    properties = { titlebars_enabled = true }
-  },
-
   -- Set Gimp to always map on the tag named "7" on screen 1.
   {
     rule       = { class = "Gimp" },
@@ -666,14 +659,9 @@ client.connect_signal("request::titlebars", function(c)
     },
     layout = wibox.layout.align.horizontal
   }
-
-  -- Hide the titlebar if the client is not floating
-  if not c.floating then
-    awful.titlebar.hide(c)
-  end
 end)
 
--- Toggle titlebar
+-- Show titlebar on floating window
 client.connect_signal("property::floating", function(c)
   if c.floating then
     awful.titlebar.show(c)
