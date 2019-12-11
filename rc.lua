@@ -94,10 +94,6 @@ local wifi_interface  = "wlp2s0"
 -- }}}
 
 -- {{{ Helper functions
-local function markup(color, text)
-  return "<span foreground=\"" .. tostring(color) .. "\">" .. tostring(text) .. "</span>"
-end
-
 local function run_in_terminal(command)
   return terminal .. " -e '" .. tostring(command) .. "'"
 end
@@ -126,75 +122,38 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- }}}
 
 -- Widgets {{{
--- color
-local red    = "#e81c4f"
-local yellow = "#ffe100"
-local gray   = "#9699a0"
+local function fa(s)
+  return "<span face=\"Font Awesome 5 Free\">" .. s .. "</span>"
+end
 
-local mywidgets = {}
+clock_widget = wibox.widget.textclock("%a, %b %d, %H:%M")
 
--- Separator
-mywidgets.separator = wibox.widget.textbox(markup(gray, " | "))
+local calendar_widget = awful.widget.calendar_popup.month({ start_sunday = true });
+calendar_widget:attach(clock_widget)
 
--- clock
-mywidgets.clock = wibox.widget.textclock("%a, %b %d, %H:%M ")
-
--- calendar
-mywidgets.calendar = awful.widget.calendar_popup.month({ start_sunday = true });
-mywidgets.calendar:attach(mywidgets.clock)
-
--- battery
-mywidgets.battery = wibox.widget.textbox()
-vicious.register(mywidgets.battery, vicious.widgets.bat, function(widget, args)
-  local level = args[2]
-  local state = args[1]
-  local value = tostring(level) .. "%"
-
-  if level <= 15 then
-    value = markup(red, value)
-  elseif level <= 30 then
-    value = markup(yellow, value)
-  end
-
-  local icon = "🔋 " 
-  if state == "⌁" or state == "↯" or state == "+" then
-    icon = "⚡ "
-  end
-
-  return icon .. value
+local battery_widget = wibox.widget.textbox()
+vicious.register(battery_widget, vicious.widgets.bat, function(_, args)
+  local icon = (args[1]:find("^[⌁↯+]$") and fa("\u{f1e6} ")) or fa("\u{f241} ")
+  return string.format("%s%d%%", icon, args[2])
 end, 61, battery)
 
--- temp
-mywidgets.cputemp = wibox.widget.textbox()
-vicious.register(mywidgets.cputemp, vicious.widgets.thermal, function(widget, args)
-  local cputemp = args[1]
-  local value   = tostring(cputemp) .. "°C"
+local cputemp_widget = wibox.widget.textbox()
+vicious.register(cputemp_widget, vicious.widgets.thermal,
+                 fa("\u{f2ca} ") .. "$1°C", 7, thermal_zone)
 
-  if cputemp >= 80 then
-    value =  markup(red, value)
-  elseif cputemp >= 70 then
-    value =  markup(yellow, value)
-  end
+local memory_widget = wibox.widget.textbox()
+vicious.register(memory_widget, vicious.widgets.mem,
+                 fa("\u{f538} ") .. "$1% / $5%", 5)
 
-  return "💻 " .. value
-end, 11, thermal_zone)
+local wifi_widget = wibox.widget.textbox()
+vicious.register(wifi_widget, vicious.widgets.wifi,
+                 fa("\u{f1eb} ") .. "${ssid} ${linp}%", 37, wifi_interface)
 
--- memory
-mywidgets.memory = wibox.widget.textbox()
-vicious.register(mywidgets.memory, vicious.widgets.mem, "🧰 $1% / $5%", 13)
-
--- wifi
-mywidgets.wifi = wibox.widget.textbox()
-vicious.register(mywidgets.wifi, vicious.widgets.wifi, "📶 ${ssid} ${linp}%", 23, wifi_interface)
-
--- volume
-mywidgets.volume = wibox.widget.textbox()
-vicious.register(mywidgets.volume, vicious.widgets.volume, function(widget, args)
-  local level = args[1]
-  local state = args[2]
-  local icon = { ["♫"] = "🔊 ", ["♩"] = "🔈 " }
-  return icon[state] .. level .. "%"
-end, 113, "Master")
+local volume_widget = wibox.widget.textbox()
+vicious.register(volume_widget, vicious.widgets.volume, function(_, args)
+  local icon = (args[2] == "♫" and fa("\u{f028} ")) or fa("\u{f6a9} ")
+  return string.format("%s%d%%", icon, args[1])
+end, 11, "Master")
 -- }}}
 
 -- {{{ Wibar
@@ -270,6 +229,19 @@ awful.screen.connect_for_each_screen(function(s)
   s.mytaglist = awful.widget.taglist {
     screen  = s,
     filter  = awful.widget.taglist.filter.all,
+    widget_template = {
+      id = 'background_role',
+      widget = wibox.container.background,
+      {
+        widget = wibox.container.margin,
+        left = beautiful.wibar_separator_width / 2,
+        right = beautiful.wibar_separator_width / 2,
+        {
+          id = 'text_role',
+          widget = wibox.widget.textbox,
+        },
+      },
+    },
     buttons = taglist_buttons
   }
 
@@ -297,19 +269,14 @@ awful.screen.connect_for_each_screen(function(s)
     -- Right widgets
     {
       layout = wibox.layout.fixed.horizontal,
+      spacing = beautiful.wibar_separator_width,
       wibox.widget.systray(),
-      mywidgets.separator,
-      mywidgets.wifi,
-      mywidgets.separator,
-      mywidgets.cputemp,
-      mywidgets.separator,
-      mywidgets.memory,
-      mywidgets.separator,
-      mywidgets.battery,
-      mywidgets.separator,
-      mywidgets.volume,
-      mywidgets.separator,
-      mywidgets.clock,
+      wifi_widget,
+      cputemp_widget,
+      memory_widget,
+      battery_widget,
+      volume_widget,
+      clock_widget,
       s.mylayoutbox,
     },
   }
