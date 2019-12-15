@@ -180,7 +180,7 @@ local function fa(s)
   return "<span face=\"Font Awesome 5 Free\">" .. s .. "</span>"
 end
 
-clock_widget = wibox.widget.textclock("%a, %b %d, %H:%M")
+local clock_widget = wibox.widget.textclock("%a, %b %d, %H:%M")
 
 local calendar_widget = awful.widget.calendar_popup.month({ start_sunday = true });
 calendar_widget:attach(clock_widget)
