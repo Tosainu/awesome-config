@@ -16,6 +16,9 @@ local wibox = require("wibox")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
+-- https://github.com/Tieske/Penlight
+local path = require("pl.path")
+
 -- https://github.com/vicious-widgets/vicious
 local vicious = require("vicious")
 
@@ -84,7 +87,6 @@ local editor        = os.getenv("EDITOR") or "vim"
 local file_manager  = "nautilus"
 local image_editor  = "gimp"
 local manual        = "man awesome"
-local screen_shot   = "scrot -e 'mv $f ~/Pictures/ 2>/dev/null'"
 local terminal      = "termite"
 local web_browser   = "chromium"
 
@@ -96,6 +98,58 @@ local wifi_interface  = "wlp2s0"
 -- {{{ Helper functions
 local function run_in_terminal(command)
   return terminal .. " -e '" .. tostring(command) .. "'"
+end
+-- }}}
+
+-- {{{ Screenshot
+local screenshot_mode = {
+  screen    = 1,
+  curwin    = 2,
+  selection = 4,
+}
+
+local function take_screenshot(mode)
+  local savedir = path.expanduser(path.join("~", "Pictures"))
+  local basename = os.date("Screenshot_%Y-%m-%d-%H%M%S")
+  local filepath = path.join(savedir, basename .. ".png")
+  local idx = 0
+  while path.exists(filepath) do
+    idx = idx + 1
+    filepath = path.join(savedir, string.format("%s_%d.png", basename, idx))
+  end
+
+  local function cb(_, err, _, code)
+    if code == 0 then
+      naughty.notify({
+        title = "Screenshot saved!",
+        text = filepath,
+        icon = filepath,
+        actions = {
+          ["Open file"] = function() awful.spawn({ "xdg-open", filepath }) end
+        },
+      })
+    else
+      naughty.notify({
+        preset = naughty.config.presets.critical,
+        title = "Failed to save screenshot",
+        text = err,
+      })
+    end
+  end
+
+  if mode == screenshot_mode.curwin then
+    local surface = gears.surface.load(client.focus.content)
+    if surface then
+      local r = surface:write_to_png(filepath)
+      cb(nil, r, nil, r == "SUCCESS" and 0 or 1)
+    else
+      cb(nil, "Error occurred during loading the surface", nil, 1)
+    end
+  elseif mode == screenshot_mode.selection then
+    awful.spawn.easy_async({ "maim", "-u", "-s", filepath }, cb)
+  else
+    awful.spawn.easy_async({ "maim", "-u", filepath }, cb)
+  end
 end
 -- }}}
 
@@ -386,8 +440,13 @@ local globalkeys = awful.util.table.join(
             { description = "open a web browser", group = "launcher" }),
   awful.key({ modkey }, "/",      function() awful.spawn(image_editor) end,
             { description = "open an image editor", group = "launcher" }),
-  awful.key({},         "Print",  function() awful.spawn(screen_shot) end,
-            { description = "capture a screen shot", group = "launcher" })
+
+  awful.key({},            "Print", function() take_screenshot(screenshot_mode.screen) end,
+            { description = "capture a screen shot", group = "launcher" }),
+  awful.key({ "Control" }, "Print", function() take_screenshot(screenshot_mode.curwin) end,
+            { description = "capture a screen shot (current window)", group = "launcher" }),
+  awful.key({ "Shift" },   "Print", function() take_screenshot(screenshot_mode.selection) end,
+            { description = "capture a screen shot (selection mode)", group = "launcher" })
 )
 
 local clientkeys = awful.util.table.join(
