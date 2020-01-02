@@ -194,10 +194,40 @@ end, 61, battery)
 local cputemp_widget = wibox.widget.textbox()
 vicious.register(cputemp_widget, vicious.widgets.thermal,
                  fa("\u{f2ca} ") .. "$1°C", 7, thermal_zone)
+local cputemp_tooltip = awful.tooltip {
+  objects = { cputemp_widget },
+  mode = "outside",
+  timer_function = function()
+    local l = {}
+    for idx, pct in pairs(vicious.widgets.cpu()) do
+      if idx >= 2 then
+        local cpuidx = idx - 2
+        local freq = vicious.widgets.cpufreq("", string.format("cpu%d", cpuidx))
+        local freq_ghz = freq[2]
+        table.insert(l, string.format("Core%2d: %.2f GHz %3d %%", cpuidx + 1, freq_ghz, pct))
+      end
+    end
+    return table.concat(l, "\n")
+  end,
+}
+vicious.cache(vicious.widgets.cpu)
+vicious.cache(vicious.widgets.cpufreq)
 
 local memory_widget = wibox.widget.textbox()
 vicious.register(memory_widget, vicious.widgets.mem,
                  fa("\u{f538} ") .. "$1% / $5%", 5)
+local memory_tooltip = awful.tooltip {
+  objects = { memory_widget },
+  mode = "outside",
+  timer_function = function()
+    local l = {}
+    local mem = vicious.widgets.mem()
+    table.insert(l, string.format("RAM:  %d/%d MiB", mem[2], mem[3]))
+    table.insert(l, string.format("SWAP: %d/%d MiB", mem[6], mem[7]))
+    return table.concat(l, "\n")
+  end,
+}
+vicious.cache(vicious.widgets.mem)
 
 local wifi_widget = wibox.widget.textbox()
 vicious.register(wifi_widget, vicious.widgets.wifi,
