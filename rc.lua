@@ -289,6 +289,10 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+local function is_primary_screen(s)
+  return s.index == screen.primary.index
+end
+
 awful.screen.connect_for_each_screen(function(s)
   -- Wallpaper
   set_wallpaper(s)
@@ -351,9 +355,10 @@ awful.screen.connect_for_each_screen(function(s)
     -- Middle widget
     s.mytasklist,
     -- Right widgets
-    {
+    gears.table.join({
       layout = wibox.layout.fixed.horizontal,
       spacing = beautiful.wibar_separator_width,
+    }, is_primary_screen(s) and {
       wibox.widget.systray(),
       wifi_widget,
       cputemp_widget,
@@ -362,7 +367,9 @@ awful.screen.connect_for_each_screen(function(s)
       volume_widget,
       clock_widget,
       s.mylayoutbox,
-    },
+    } or {
+      s.mylayoutbox,
+    }),
   }
 end)
 -- }}}
