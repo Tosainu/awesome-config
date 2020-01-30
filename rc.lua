@@ -16,8 +16,9 @@ local wibox = require("wibox")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
--- https://github.com/Tieske/Penlight
-local path = require("pl.path")
+-- https://github.com/pavouk/lgi
+local lgi = require("lgi")
+local Gio = lgi.Gio
 
 -- https://github.com/vicious-widgets/vicious
 local vicious = require("vicious")
@@ -99,6 +100,11 @@ local wifi_interface  = "wlp2s0"
 local function run_in_terminal(command)
   return terminal .. " -e '" .. tostring(command) .. "'"
 end
+
+local function path_exists(filepath)
+  local gfile = Gio.File.new_for_path(filepath)
+  return gfile:query_exists()
+end
 -- }}}
 
 -- {{{ Screenshot
@@ -108,47 +114,47 @@ local screenshot_mode = {
   selection = 4,
 }
 
-local function take_screenshot(mode)
-  local savedir = path.expanduser(path.join("~", "Pictures"))
-  local basename = os.date("Screenshot_%Y-%m-%d-%H%M%S")
-  local filepath = path.join(savedir, basename .. ".png")
-  local idx = 0
-  while path.exists(filepath) do
-    idx = idx + 1
-    filepath = path.join(savedir, string.format("%s_%d.png", basename, idx))
-  end
+local function notify_screenshot_result(filepath, err)
+  naughty.notify(err and {
+    preset = naughty.config.presets.critical,
+    title = "Failed to save screenshot",
+    text = err,
+  } or {
+    title = "Screenshot saved!",
+    text = filepath,
+    icon = filepath,
+    actions = {
+      ["Open file"] = function() awful.spawn({ "xdg-open", filepath }) end
+    },
+  })
+end
 
-  local function cb(_, err, _, code)
-    if code == 0 then
-      naughty.notify({
-        title = "Screenshot saved!",
-        text = filepath,
-        icon = filepath,
-        actions = {
-          ["Open file"] = function() awful.spawn({ "xdg-open", filepath }) end
-        },
-      })
-    else
-      naughty.notify({
-        preset = naughty.config.presets.critical,
-        title = "Failed to save screenshot",
-        text = err,
-      })
-    end
+local function take_screenshot(mode)
+  local savedir = os.getenv("HOME") .. "/Pictures/"
+  local basename = os.date("Screenshot_%Y-%m-%d-%H%M%S")
+  local filepath = savedir .. basename .. ".png"
+  local idx = 0
+  while path_exists(filepath) do
+    idx = idx + 1
+    filepath = savedir .. string.format("%s_%d.png", basename, idx)
   end
 
   if mode == screenshot_mode.curwin then
     local surface = gears.surface.load(client.focus.content)
     if surface then
       local r = surface:write_to_png(filepath)
-      cb(nil, r, nil, r == "SUCCESS" and 0 or 1)
+      notify_screenshot_result(filepath, r ~= "SUCCESS" and r or nil)
     else
-      cb(nil, "Error occurred during loading the surface", nil, 1)
+      notify_screenshot_result(filepath, "Error occurred during loading the surface")
     end
-  elseif mode == screenshot_mode.selection then
-    awful.spawn.easy_async({ "maim", "-u", "-s", filepath }, cb)
   else
-    awful.spawn.easy_async({ "maim", "-u", filepath }, cb)
+    local cmd = { "maim", "-u", filepath }
+    if mode == screenshot_mode.selection then
+      table.insert(cmd, "-s")
+    end
+    awful.spawn.easy_async(cmd, function(_, err, _, code)
+      notify_screenshot_result(filepath, code ~= 0 and err or nil)
+    end)
   end
 end
 -- }}}
