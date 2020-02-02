@@ -48,8 +48,14 @@ theme.notification_font = font(defult_font, 10)
 theme.notification_width = dpi(448)
 theme.notification_icon_size = dpi(64)
 
+-- tooltip
+theme.tooltip_font = font(defult_font_mono, 11)
+theme.tooltip_bg = theme.bg_normal
+theme.tooltip_fg = theme.fg_normal
+theme.tooltip_border = theme.border_normal
+
 -- menu
-theme.menu_font = font(defult_font, 9)
+theme.menu_font = font(defult_font, 10)
 theme.menu_height = dpi(18)
 
 -- wibar
