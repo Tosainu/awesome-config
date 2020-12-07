@@ -91,9 +91,9 @@ local manual        = "man awesome"
 local terminal      = "alacritty"
 local web_browser   = "chromium"
 
-local battery         = "BAT1"
-local thermal_zone    = "thermal_zone0"
-local wifi_interface  = "wlp2s0"
+local battery         = "BAT0"
+local thermal_zone    = {"hwmon4", "hwmon", "temp2_input"}
+local wifi_interface  = "wlan0"
 -- }}}
 
 -- {{{ Helper functions
