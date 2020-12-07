@@ -88,7 +88,7 @@ local editor        = os.getenv("EDITOR") or "vim"
 local file_manager  = "nautilus"
 local image_editor  = "gimp"
 local manual        = "man awesome"
-local terminal      = "termite"
+local terminal      = "alacritty"
 local web_browser   = "chromium"
 
 local battery         = "BAT1"
