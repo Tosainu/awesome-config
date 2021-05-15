@@ -241,7 +241,7 @@ vicious.register(wifi_widget, vicious.widgets.wifi,
 
 local volume_widget = wibox.widget.textbox()
 vicious.register(volume_widget, vicious.widgets.volume, function(_, args)
-  local icon = (args[2] == "♫" and fa("\u{f028} ")) or fa("\u{f6a9} ")
+  local icon = (args[2] == "🔉" and fa("\u{f028} ")) or fa("\u{f6a9} ")
   return string.format("%s%d%%", icon, args[1])
 end, 11, "Master")
 -- }}}
