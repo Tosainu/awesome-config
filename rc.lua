@@ -22,6 +22,8 @@ local Gio = lgi.Gio
 
 -- https://github.com/vicious-widgets/vicious
 local vicious = require("vicious")
+vicious.helpers = require('vicious.helpers')
+vicious.spawn = require('vicious.spawn')
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -236,8 +238,25 @@ local memory_tooltip = awful.tooltip {
 vicious.cache(vicious.widgets.mem)
 
 local wifi_widget = wibox.widget.textbox()
-vicious.register(wifi_widget, vicious.widgets.wifi,
-                 fa("\u{f1eb} ") .. "${ssid} ${linp}%", 37, wifi_interface)
+vicious.register(wifi_widget, vicious.helpers.setasyncall({
+  async = function(format, warg, callback)
+    if type(warg) ~= "string" then return callback{} end
+    local cmd = "iwctl station " .. warg .. " show"
+    vicious.spawn.easy_async_with_shell(cmd, function(stdout, stderr, exitreason, exitcode)
+      local winfo = {}
+      winfo["{ssid}"] = stdout:match("Connected network%s+(.-)%s*\n") or "N/A"
+      winfo["{link}"] = tonumber(stdout:match("RSSI%s+(%-?%d+)") or -100)
+      if winfo["{link}"] >  -50 then
+        winfo["{linp}"] = 100
+      elseif winfo["{link}"] < -100 then
+        winfo["{linp}"] = 0
+      else
+        winfo["{linp}"] = (winfo["{link}"] + 100) * 2
+      end
+      callback(winfo)
+    end)
+  end
+}), fa("\u{f1eb} ") .. "${ssid} ${linp}%", 37, wifi_interface)
 
 local volume_widget = wibox.widget.textbox()
 vicious.register(volume_widget, vicious.widgets.volume, function(_, args)
