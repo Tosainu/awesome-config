@@ -94,7 +94,7 @@ local terminal      = "alacritty"
 local web_browser   = "chromium"
 
 local battery         = "BAT0"
-local thermal_zone    = {"hwmon4", "hwmon", "temp2_input"}
+local hwmon_sensor    = {"thinkpad", 1}
 local wifi_interface  = "wlan0"
 -- }}}
 
@@ -200,8 +200,8 @@ vicious.register(battery_widget, vicious.widgets.bat, function(_, args)
 end, 61, battery)
 
 local cputemp_widget = wibox.widget.textbox()
-vicious.register(cputemp_widget, vicious.widgets.thermal,
-                 fa("\u{f2ca} ") .. "$1°C", 7, thermal_zone)
+vicious.register(cputemp_widget, vicious.widgets.hwmontemp,
+                 fa("\u{f2ca} ") .. "$1°C", 7, hwmon_sensor)
 local cputemp_tooltip = awful.tooltip {
   objects = { cputemp_widget },
   mode = "outside",
