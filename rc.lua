@@ -185,7 +185,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- Widgets {{{
 local function fa(s)
-  return "<span face=\"Font Awesome 5 Free\">" .. s .. "</span>"
+  return "<span face=\"Font Awesome 6 Free\">" .. s .. "</span>"
 end
 
 local clock_widget = wibox.widget.textclock("%a, %b %d, %H:%M")
