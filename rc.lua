@@ -610,6 +610,7 @@ root.keys(globalkeys)
 -- }}}
 
 -- {{{ Rules
+-- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
   -- All clients will match this rule.
   {
@@ -656,25 +657,7 @@ awful.rules.rules = {
         "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
       }
     },
-    properties = { floating = true }
-  },
-
-  -- Teminal enulators
-  {
-    rule_any = {
-      class = {
-        "Gvim",
-        "Temite",
-        "XTerm",
-      },
-    },
-    properties = { size_hints_honor = false }
-  },
-
-  -- Set Gimp to always map on the tag named "7" on screen 1.
-  {
-    rule       = { class = "Gimp" },
-    properties = { screen = 1, tag = "7" }
+    properties = { floating = true, titlebars_enabled = true }
   },
 
   {
@@ -686,6 +669,38 @@ awful.rules.rules = {
   {
     rule       = { class = "Inkscape", type = "normal" },
     properties = { floating = false }
+  },
+
+  -- Add titlebars to dialogs
+  {
+    rule_any = { type = { "dialog" } },
+    properties = { titlebars_enabled = true },
+  },
+
+  -- Set Gimp to always map on the tag named "7" on screen 1.
+  {
+    rule       = { class = "Gimp" },
+    properties = { screen = 1, tag = "7" }
+  },
+
+  -- Chromium PiP
+  {
+    rule = { name = "Picture in picture" },
+    properties = { floating = true, focusable = false, ontop = true, skip_taskbar = true }
+  },
+
+  -- Vivado
+  {
+    rule = { class = "Vivado", name = "JidePopup" },
+    properties = { floating = true, titlebars_enabled = false }
+  },
+  {
+    rule = { class = "Vivado", name = "win0" },
+    properties = { floating = true, titlebars_enabled = false }
+  },
+  {
+    rule = { class = "Vivado", skip_taskbar = true },
+    properties = { floating = true },
   },
 }
 -- }}}
@@ -747,15 +762,6 @@ client.connect_signal("request::titlebars", function(c)
     },
     layout = wibox.layout.align.horizontal
   }
-end)
-
--- Show titlebar on floating window
-client.connect_signal("property::floating", function(c)
-  if c.floating then
-    awful.titlebar.show(c)
-  else
-    awful.titlebar.hide(c)
-  end
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
