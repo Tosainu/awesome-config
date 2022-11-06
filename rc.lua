@@ -259,10 +259,20 @@ vicious.register(wifi_widget, vicious.helpers.setasyncall({
 }), fa("\u{f1eb} ") .. "${ssid} ${linp}%", 37, wifi_interface)
 
 local volume_widget = wibox.widget.textbox()
-vicious.register(volume_widget, vicious.widgets.volume, function(_, args)
+vicious.register(volume_widget, vicious.helpers.setasyncall({
+  async = function(_, _, callback)
+    local cmd = "pactl get-sink-volume @DEFAULT_SINK@; pactl get-sink-mute @DEFAULT_SINK@"
+    vicious.spawn.easy_async_with_shell(cmd, function(stdout, _, _, _)
+      callback({
+        tonumber(stdout:match("(%d+)%%") or 0),
+        stdout:find("Mute: yes") and '🔈' or '🔉'
+      })
+    end)
+  end
+}), function(_, args)
   local icon = (args[2] == "🔉" and fa("\u{f028} ")) or fa("\u{f6a9} ")
   return string.format("%s%d%%", icon, args[1])
-end, 11, "Master")
+end, 11)
 -- }}}
 
 -- {{{ Wibar
