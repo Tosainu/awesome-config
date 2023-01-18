@@ -91,7 +91,7 @@ local file_manager  = "nautilus"
 local image_editor  = "gimp"
 local manual        = "man awesome"
 local terminal      = "alacritty"
-local web_browser   = "chromium"
+local web_browser   = "google-chrome-stable"
 
 local battery         = "BAT0"
 local hwmon_sensor    = {"thinkpad", 1}
@@ -716,6 +716,10 @@ awful.rules.rules = {
 -- }}}
 
 -- {{{ Signals
+local browser_classes = {
+  "Google-chrome",
+}
+
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
   -- Set the windows at the slave,
@@ -727,6 +731,15 @@ client.connect_signal("manage", function(c)
     and not c.size_hints.program_position then
     -- Prevent clients from being unreachable after screen count changes.
     awful.placement.no_offscreen(c)
+  end
+
+  if mouse.coords().buttons[1] then
+    for _, bc in ipairs(browser_classes) do
+      if bc == c.class then
+        c.floating = true
+        break
+      end
+    end
   end
 end)
 
